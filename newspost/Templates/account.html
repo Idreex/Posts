@@ -1,8 +1,12 @@
 {% extends 'base.html' %}
+    {{title}}
 
-  {{title}}
     {% block content %}
 
-      <h3>Account </h3>
+        <div form-control>
+            <div>
+                <a href="{{url_for('add_post')}}">Add Post</a>    
+            </div>
+        </div>
 
     {% endblock content %}

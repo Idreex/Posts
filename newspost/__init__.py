@@ -1,18 +1,22 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
-from flask_login import login_user, LoginManager
-
+from flask_login import LoginManager
 
 
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = '06294dacbc34f791def6eb6699194461'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///news_post.db'
+app.config['SECRET_KEY'] = '5fe27e178fe036eafc56a95ec63a4858'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///post.db'
+
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
+
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
-login_manager.login_message_category = 'info'
 
-from newspost import routes
+
+
+
+
+
