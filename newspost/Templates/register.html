@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+  {{title}}
+    {% block content %}
+
+      <form action="" method="POST" class="form-group">
+            {{form.hidden_tag()}}
+        <fieldset class="form-group">
+          <legend>Join Us Now</legend>
+            <div class="form-group">
+              {{form.username.label(class="form-control form-control-label")}}
+              {{form.username(class="form-control form-control-lg")}}
+            </div>
+            <div class="form-group">
+              {{form.email.label(class="form-control form-control-label")}}
+              {{form.email(class="form-control form-control-lg")}}
+            </div>
+            <div class="form-group">
+              {{form.password.label(class="form-control form-control-label")}}
+              {{form.password(class="form-control form-control-lg")}}
+            </div>
+            <div class="form-group">
+              {{form.confirm_password.label(class="form-control form-control-label")}}
+              {{form.confirm_password(class="form-control form-control-lg")}}
+            </div>
+            <div class="form-group">
+              {{form.submit.label(class="form-control form-control-label")}}
+              {{form.submit(class="form-control form-control-lg")}}
+            </div>
+        </fieldset>
+        <small text-muted mt-4>Already Have an Account? <a class="mr2" href="{{url_for('login')}}">Login</a></small>
+      </form>
+
+    {% endblock content %}
