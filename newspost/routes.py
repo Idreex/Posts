@@ -1,9 +1,12 @@
+import os
+import secrets
 from newspost import app,db
 from flask import render_template, redirect, flash, request
-from newspost.form import RegistrationForm, LoginForm
+from newspost.form import RegistrationForm, LoginForm, UpdateAccountForm
 from newspost.model import User, Post
 from newspost import bcrypt
 from flask_login import login_user, current_user, logout_user, login_required
+from PIL import Image
 
 
 
@@ -11,13 +14,13 @@ from flask_login import login_user, current_user, logout_user, login_required
 
 posts = [
     {
-        'author': 'Corey Schafer',
+        'author': 'Idrees Oladimeji',
         'title': 'Blog Post 1',
         'content': 'First post content',
         'date_posted': 'April 20, 2018'
     },
     {
-        'author': 'Jane Doe',
+        'author': 'Bola Asake',
         'title': 'Blog Post 2',
         'content': 'Second post content',
         'date_posted': 'April 21, 2018'
@@ -30,8 +33,7 @@ posts = [
 @app.route('/home')
 @login_required
 def home():
-    post = Post(title='Blog Post 1', content='First Post content')
-    return render_template('home.html', title='Home', post=post)
+    return render_template('home.html', title='Home', posts=posts)
 
 
 
@@ -79,17 +81,32 @@ def logout():
     return redirect('login')
 
 
-
-
 @app.route('/about')
 @login_required
 def about():
     return render_template('about.html', title='about')
 
 
+
+def save_picture(form_picture):
+    random_hex = secrets.token_hex(8)
+    _, f_ext = os.path.splitext(form_picture.filename)
+    picture_fn = random_hex + f_ext
+    picture_path = os.path.join(app.root.path, 'static/img', + picture_fn)
+    output_size = (125,125)
+    i = Image.open(form_picture)
+    i.thumbnail(output_size)
+    i.save(picture_path)
+    return picture_fn
+
 @app.route('/account')
 @login_required
 def account():
-
-    return render_template('account.html', title='account')
+    form = UpdateAccountForm()
+    if form.validate_on_submit():
+        current_user.username = form.username.data
+        current_user.email = form.email.data
+        db.commit()
+        flash('You account has been updated')
+    return render_template('account.html', title='account', form=form)
 
