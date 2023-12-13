@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileField
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, F
+from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Length, EqualTo, Email, ValidationError
 from newspost.model import User
 from flask_login import current_user
@@ -40,8 +40,8 @@ class LoginForm(FlaskForm):
 class UpdateAccountForm(FlaskForm):
     username = StringField(label='Username', validators=[DataRequired(), Length(min=2, max=20)])
     email = StringField(label='Email', validators=[DataRequired(), Email()])
-    file = FileField(label='Upload Picture', validators=[FileAllowed(['jpeg','png'])])
-    submit = SubmitField(label='Login')
+    picture = FileField(label='Upload Picture', validators=[FileAllowed(['jpg','png'])])
+    submit = SubmitField(label='Update')
 
 
 
@@ -57,17 +57,5 @@ class UpdateAccountForm(FlaskForm):
             user = User.query.filter_by(email=email.data).first()
             if user:
                 raise ValidationError('The Email is taken already, try other one')
-
-
-
-
-
-
-
-
-
-   
-
-
 
 
