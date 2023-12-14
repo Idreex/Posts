@@ -2,7 +2,7 @@ import os
 import secrets
 from newspost import app,db
 from flask import render_template, redirect, flash, url_for, request
-from newspost.form import RegistrationForm, LoginForm, UpdateAccountForm
+from newspost.form import RegistrationForm, LoginForm, UpdateAccountForm, PostForm
 from newspost.model import User, Post
 from newspost import bcrypt
 from flask_login import login_user, current_user, logout_user, login_required
@@ -11,28 +11,11 @@ from PIL import Image
 
 
 
-
-posts = [
-    {
-        'author': 'Idrees Oladimeji',
-        'title': 'Blog Post 1',
-        'content': 'First post content',
-        'date_posted': 'April 20, 2018'
-    },
-    {
-        'author': 'Bola Asake',
-        'title': 'Blog Post 2',
-        'content': 'Second post content',
-        'date_posted': 'April 21, 2018'
-    }
-]
-
-
-
 @app.route('/')
 @app.route('/home')
 @login_required
 def home():
+    posts = Post.query.all()
     return render_template('home.html', title='Home', posts=posts)
 
 
@@ -105,8 +88,12 @@ def account():
     form = UpdateAccountForm()
     if form.validate_on_submit():
         if form.picture.data:
-            picture_file = save_picture(form.picture.data)
-            current_user.image_file = picture_file
+            try:
+                picture_file = save_picture(form.picture.data)
+                current_user.image_file = picture_file
+            except Exception:
+                flash('Picture extention not supported', 'danger')
+                return redirect(url_for('account'))
         current_user.username = form.username.data
         current_user.email = form.email.data
         db.session.commit()
@@ -118,3 +105,19 @@ def account():
     image_file = url_for('static', filename='img/' + current_user.image_file)
     return render_template('account.html', title='Account',
                            image_file=image_file, form=form)
+
+
+
+
+@app.route('/new_post', methods=['GET', 'POST'])
+@login_required
+def new_post():
+    form = PostForm()
+    if form.validate_on_submit():
+        post = Post(title=form.title.data, content=form.content.data, author=current_user)
+        db.session.add(post)
+        db.session.commit()
+        flash('Your post has been created!', 'success')
+        return redirect(url_for('home'))
+    return render_template('new_post.html', title='New Post',
+                           form=form, legend='New Post') 

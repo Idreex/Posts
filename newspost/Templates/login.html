@@ -3,11 +3,11 @@
 
     {% block content %}
 
-    <div class="form-group">
+    <div class="form-control">
         <form method='POST'>
             {{form.hidden_tag()}}
-            <legend form-froup>Login</legend>
-                <div class="form-control">
+            <legend form-froup>Login</legend><hr>
+                <div class="form-group">
                     <div class="form-group">
                         {{form.email.label(class='form-control-label')}}
                             {% if form.email.error %}
