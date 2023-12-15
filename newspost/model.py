@@ -1,6 +1,5 @@
 from datetime import datetime
 from newspost import db
-from sqlalchemy import Column, DateTime, String, ForeignKey, Integer, Text
 from flask_login import UserMixin
 from newspost import login_manager
 
@@ -17,6 +16,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(120), nullable=False, unique=True)
     password = db.Column(db.String(), nullable=False)
     image_file = db.Column(db.String, default='default.jpg')
+    date_updated = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     post = db.relationship('Post', backref='author', lazy=True)
 
 
@@ -30,6 +30,7 @@ class Post(db.Model):
     title = db.Column(db.String(60),unique=True, nullable=False)
     content = db.Column(db.Text(420), nullable=False, unique=True)
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    date_updated = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
 

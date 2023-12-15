@@ -65,3 +65,9 @@ class PostForm(FlaskForm):
     submit = SubmitField(label='Create Post')
 
 
+class UpdatePostForm(FlaskForm):
+    title = StringField(label='Title', validators=[DataRequired()])
+    content = TextAreaField(label='Content', validators=[DataRequired()])
+    submit = SubmitField(label='Update Post')
+
+

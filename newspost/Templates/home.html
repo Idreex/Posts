@@ -9,9 +9,10 @@
           <div class="media-body">
             <div class="article-metadata">
               <a class="mr-2" href="{{url_for('account')}}">{{ post.author.username }}</a>
-              <small class="text-muted">{{ post.date_posted.strftime('%d-%m-%Y') }}</small>
+              <small class="text-muted ml-4 ">Updated last: {{ post.date_posted.strftime('%a-%b-%X') }}</small>
+              <small class="text-muted ml-4">Date Created: {{ post.date_updated.strftime('%a-%b-%X') }} </small>
             </div>
-            <h2><a class="article-title" href="#">{{ post.title }}</a></h2>
+            <h2><a class="article-title" href="{{url_for('post', post_id=post.id)}}">{{ post.title }}</a></h2>
             <p class="article-content">{{ post.content }}</p>
           </div>
         </article>

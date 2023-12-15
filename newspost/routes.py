@@ -1,8 +1,9 @@
 import os
 import secrets
+from datetime import datetime
 from newspost import app,db
-from flask import render_template, redirect, flash, url_for, request
-from newspost.form import RegistrationForm, LoginForm, UpdateAccountForm, PostForm
+from flask import render_template, redirect, flash, url_for, request, abort
+from newspost.form import RegistrationForm, LoginForm, UpdateAccountForm, PostForm, UpdatePostForm
 from newspost.model import User, Post
 from newspost import bcrypt
 from flask_login import login_user, current_user, logout_user, login_required
@@ -103,8 +104,7 @@ def account():
         form.username.data = current_user.username
         form.email.data = current_user.email
     image_file = url_for('static', filename='img/' + current_user.image_file)
-    return render_template('account.html', title='Account',
-                           image_file=image_file, form=form)
+    return render_template('account.html', title='Account', image_file=image_file, form=form)
 
 
 
@@ -119,5 +119,52 @@ def new_post():
         db.session.commit()
         flash('Your post has been created!', 'success')
         return redirect(url_for('home'))
-    return render_template('new_post.html', title='New Post',
-                           form=form, legend='New Post') 
+    return render_template('new_post.html', title='New Post', form=form, legend='New Post') 
+
+
+
+@app.route('/post/<int:post_id>', methods=['GET','POST'])
+@login_required
+def post(post_id):
+    post = Post.query.get_or_404(post_id)
+    return render_template('post.html', post = post)
+
+
+
+@app.route('/post/<int:post_id>/update', methods=['GET','POST'])
+@login_required
+def update_post(post_id):
+    post = Post.query.get_or_404(post_id)
+    if current_user != post.author:
+        abort(403)
+    form = UpdatePostForm()
+    if form.validate_on_submit():
+        post.title = form.title.data
+        post.content = form.content.data
+        post.date_posted = datetime.utcnow()
+        db.session.commit()
+        flash('Your post has been updated', 'success')
+        return redirect(url_for('post', post_id=post.id))
+    elif request.method == 'GET':
+        form.title.data = post.title
+        form.content.data = post.content
+
+    return render_template('Update_post.html', form=form, title='Update Post', legend='Update Post')
+
+
+
+@app.route('/post/<int:post_id>/delete')
+@login_required
+def delete(post_id):
+    
+    return redirect('home')
+
+
+
+
+
+
+
+
+
+
