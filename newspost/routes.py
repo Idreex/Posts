@@ -16,7 +16,9 @@ from PIL import Image
 @app.route('/home')
 @login_required
 def home():
+
     posts = Post.query.all()
+
     return render_template('home.html', title='Home', posts=posts)
 
 
@@ -95,11 +97,19 @@ def account():
             except Exception:
                 flash('Picture extention not supported', 'danger')
                 return redirect(url_for('account'))
+        try:
+            if form.username.data == current_user.username and form.email.data == current_user.email:
+                flash('No changes made','info')
+                return redirect('account')
+        except Exception:
+            flash('No changes made', 'info')
+           
         current_user.username = form.username.data
         current_user.email = form.email.data
         db.session.commit()
         flash('Your account has been updated!', 'success')
         return redirect(url_for('account'))
+    
     elif request.method == 'GET':
         form.username.data = current_user.username
         form.email.data = current_user.email
@@ -153,10 +163,14 @@ def update_post(post_id):
 
 
 
-@app.route('/post/<int:post_id>/delete')
+@app.route('/post/<int:post_id>/delete', methods=['POST'])
 @login_required
 def delete(post_id):
-    
+    post = Post.query.get_or_404(post_id)
+    if post.author != current_user:
+        abort(403)
+    db.session.delete(post)
+    db.session.commit()
     return redirect('home')
 
 

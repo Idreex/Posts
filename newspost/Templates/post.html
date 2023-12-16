@@ -15,10 +15,12 @@
             <h2><a class="article-title" href="{{url_for('update_post', post_id=post.id)}}">{{ post.title }}</a></h2>
             <p class="article-content">{{ post.content }}</p>
             <hr>
+            {% if post.author == current_user %}
             <div class="flx">
             <a class="btn btn-info btn-sm mt-1 mb-1" href="{{ url_for('update_post', post_id=post.id) }}">Update</a>
             <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Delete</button>
-            </div>
+          </div>
+            {% endif %}
         </article>
 
 
@@ -41,6 +43,8 @@
       <!-- Modal footer -->
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        <form action="{{url_for('delete', post_id=post.id)}}" method="POST">
+          <button type="submit" class="btn btn-danger btn-sm m-1">Delete</button>        </form>
       </div>
 
     </div>
