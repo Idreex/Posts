@@ -97,12 +97,6 @@ def account():
             except Exception:
                 flash('Picture extention not supported', 'danger')
                 return redirect(url_for('account'))
-        try:
-            if form.username.data == current_user.username and form.email.data == current_user.email:
-                flash('No changes made','info')
-                return redirect('account')
-        except Exception:
-            flash('No changes made', 'info')
            
         current_user.username = form.username.data
         current_user.email = form.email.data
@@ -121,7 +115,7 @@ def account():
 
 @app.route('/new_post', methods=['GET', 'POST'])
 @login_required
-def new_post():
+def create_post():
     form = PostForm()
     if form.validate_on_submit():
         post = Post(title=form.title.data, content=form.content.data, author=current_user)
@@ -129,7 +123,7 @@ def new_post():
         db.session.commit()
         flash('Your post has been created!', 'success')
         return redirect(url_for('home'))
-    return render_template('new_post.html', title='New Post', form=form, legend='New Post') 
+    return render_template('create_post.html', title='New Post', form=form, legend='New Post') 
 
 
 
@@ -138,43 +132,6 @@ def new_post():
 def post(post_id):
     post = Post.query.get_or_404(post_id)
     return render_template('post.html', post = post)
-
-
-
-@app.route('/post/<int:post_id>/update', methods=['GET','POST'])
-@login_required
-def update_post(post_id):
-    post = Post.query.get_or_404(post_id)
-    if current_user != post.author:
-        abort(403)
-    form = UpdatePostForm()
-    if form.validate_on_submit():
-        post.title = form.title.data
-        post.content = form.content.data
-        post.date_posted = datetime.utcnow()
-        db.session.commit()
-        flash('Your post has been updated', 'success')
-        return redirect(url_for('post', post_id=post.id))
-    elif request.method == 'GET':
-        form.title.data = post.title
-        form.content.data = post.content
-
-    return render_template('Update_post.html', form=form, title='Update Post', legend='Update Post')
-
-
-
-@app.route('/post/<int:post_id>/delete', methods=['POST'])
-@login_required
-def delete(post_id):
-    post = Post.query.get_or_404(post_id)
-    if post.author != current_user:
-        abort(403)
-    db.session.delete(post)
-    db.session.commit()
-    return redirect('home')
-
-
-
 
 
 
