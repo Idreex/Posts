@@ -19,14 +19,12 @@
         
     {% endfor %}
 
-        {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
-            {% if page_num %}
-                <a class="btn btn-primary" href="{{url_for('user_post', username=username, page=page_num)}}">{{ page_num }}</a>
-            {% else %}    
-                <a class="btn btn-outline-info" href="{{url_for('user_post', username=username, page=page_num)}}">{{ page_num }}</a>
+        {% for page in posts.iter_pages(left_edge=1, right_edge=1, left_current=3, right_current=3) %}
+            {% if page %}
+            <a class="btn btn-primary" href="{{url_for('user_post', username=username, page=page)}}">{{ page_num }}</a>
+            {% else %} 
+               ...
             {% endif %}
-        {% else %}
-            ...
         {% endfor %}
 
     {% endblock content %}
