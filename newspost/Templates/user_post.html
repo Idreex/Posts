@@ -19,6 +19,7 @@
         
     {% endfor %}
 
+<<<<<<< HEAD
         {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
             {% if page_num %}
                 <a class="btn btn-primary" href="{{url_for('user_post', username=username, page=page_num)}}">{{ page_num }}</a>
@@ -27,6 +28,14 @@
             {% endif %}
         {% else %}
             ...
+=======
+        {% for page in posts.iter_pages(left_edge=1, right_edge=1, left_current=3, right_current=3) %}
+            {% if page %}
+            <a class="btn btn-primary" href="{{url_for('user_post', username=username, page=page)}}">{{ page_num }}</a>
+            {% else %} 
+               ...
+            {% endif %}
+>>>>>>> 6e3ed4b4bebf9c695b4368ab0c3dc98c1b5c5a73
         {% endfor %}
 
     {% endblock content %}
