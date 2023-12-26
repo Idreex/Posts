@@ -3,7 +3,8 @@ import secrets
 from datetime import datetime
 from newspost import app, db
 from flask import render_template, redirect, flash, url_for, request, abort
-from newspost.form import RegistrationForm, LoginForm, UpdateAccountForm, PostForm, UpdatePostForm
+from newspost.form import (RegistrationForm, LoginForm, UpdateAccountForm, PostForm,
+                            UpdatePostForm, RequestResetForm, ResetPasswordForm)
 from newspost.model import User, Post
 from newspost import bcrypt
 from flask_login import login_user, current_user, logout_user, login_required
@@ -17,21 +18,12 @@ from PIL import Image
 @login_required
 def home():
     page = request.args.get('page', 1, type=int)
-<<<<<<< HEAD
     posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=2)
-=======
-    posts = Post.query.order_by(Post.date_posted.desc()).paginate(per_page=3, page=page)
->>>>>>> 6e3ed4b4bebf9c695b4368ab0c3dc98c1b5c5a73
+    
+
 
     return render_template('home.html', title='Home', posts=posts)
 
-
-<<<<<<< HEAD
-
-
-=======
- 
->>>>>>> 6e3ed4b4bebf9c695b4368ab0c3dc98c1b5c5a73
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
@@ -178,11 +170,17 @@ def user_post(username):
     page = request.args.get('page', 1, type=int)
     user = User.query.filter_by(username=username).first_or_404()
     posts = Post.query.filter_by(author=user).order_by(Post.date_posted.desc())\
-            .paginate(page=page, per_page=3)
+            .paginate(page=page, per_page=1)
 
     return render_template('user_post.html', title='Home', posts=posts, user=user)
 
 
+@app.route('/reset_password', methods=['GET', 'POST'])
+def reset_password():
+    if current_user.is_authenticated:
+        return redirect('home')
+    form = RequestResetForm()
+    return render_template('reset_form.html',title ='Reset Password' form=form)
 
 
 

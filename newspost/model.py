@@ -1,7 +1,8 @@
 from datetime import datetime
-from newspost import db
+from newspost import db, app
 from flask_login import UserMixin
 from newspost import login_manager
+from itsdangerous import TimedSerializer as Serializer
 
 
 @login_manager.user_loader
@@ -18,6 +19,19 @@ class User(db.Model, UserMixin):
     image_file = db.Column(db.String, default='default.jpg')
     date_updated = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     post = db.relationship('Post', backref='author', lazy=True)
+
+    def get_token_reset(self, expire_sec=1800):
+        s = Serializer(app.config['SECRET_KEY'], expire_sec)
+        return s.dumps({'user_id : self.id'}).decode('utf-8')
+    
+    def verify_reset_token(token):
+        s = Serializer(app.config['SECRET_KEY'])
+        try:
+            user_id  = s.load(token)['user_id']
+        except:
+            return None
+        return User.query.get(user_id)
+    
 
 
     def __repr__(self):
