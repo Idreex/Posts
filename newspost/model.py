@@ -20,6 +20,19 @@ class User(db.Model, UserMixin):
     date_updated = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     post = db.relationship('Post', backref='author', lazy=True)
 
+    def get_token_reset(self, expire_sec=1800):
+        s = Serializer(app.config['SECRET_KEY'], expire_sec)
+        return s.dumps({'user_id : self.id'}).decode('utf-8')
+    
+    def verify_reset_token(token):
+        s = Serializer(app.config['SECRET_KEY'])
+        try:
+            user_id  = s.load(token)['user_id']
+        except:
+            return None
+        return User.query.get(user_id)
+    
+
 
     def get_reset_token(self, expires_sec=1800):
         s = Serializer(app.config['SECRET_KEY'], expires_sec)

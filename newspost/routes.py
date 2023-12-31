@@ -3,7 +3,8 @@ import secrets
 from datetime import datetime
 from newspost import app, db
 from flask import render_template, redirect, flash, url_for, request, abort
-from newspost.form import RegistrationForm, LoginForm, UpdateAccountForm, PostForm, UpdatePostForm
+from newspost.form import (RegistrationForm, LoginForm, UpdateAccountForm, PostForm,
+                            UpdatePostForm, RequestResetForm, ResetPasswordForm)
 from newspost.model import User, Post
 from newspost import bcrypt
 from flask_login import login_user, current_user, logout_user, login_required
@@ -174,4 +175,10 @@ def user_post(username):
     return render_template('user_post.html', title='Home', posts=posts, user=user)
 
 
+@app.route('/reset_password', methods=['GET', 'POST'])
+def reset_password():
+    if current_user.is_authenticated:
+        return redirect('home')
+    form = RequestResetForm()
+    return render_template('reset_form.html',title ='Reset Password' form=form)
 
