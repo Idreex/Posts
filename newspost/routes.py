@@ -219,37 +219,3 @@ def reset_token(token):
 
 
 
-
-
-# @app.route('/reset_password', methods=['GET', 'POST'])
-# def reset_request():
-#     if current_user.is_authenticated:
-#         return redirect('home')
-#     form = RequestResetForm()
-#     if form.validate_on_submit():
-#         user = User.query.filter_by(email=form.email.data).first()
-#         send_reset_email(user)
-#         flash('An email has been sent to your inbox, follow the instruction to reset your passwoed', 'info')
-#         return redirect(url_for('login'))
-#     return render_template('reset_request.html',title = 'Reset Password',form = form)
-
-
-
-# @app.route('/reset_password/<token>', methods=['GET', 'POST'])
-# def reset_token(token):
-#     if current_user.is_authenticated:
-#         return redirect('home')
-#     user = User.verify_reset_token(token)
-#     if user is None:
-#         flash('That is an invalid or expired token', category='warning')
-#         return redirect(url_for('reset_request'))
-#     form = ResetPasswordForm()
-#     if form.validate_on_submit():
-#         hashed = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-#         user.passwoed = hashed
-#         db.session.commit()
-#         flash(f'Account created successfully for {form.username.data}', 'success')
-#         return redirect('home')
-#     return render_template('reset_token.html',title = 'Reset Password',form = form)
-
-
