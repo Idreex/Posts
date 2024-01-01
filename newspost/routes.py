@@ -217,5 +217,3 @@ def reset_token(token):
     return render_template('reset_token.html',title = 'Reset Password',form=form)
 
 
-
-
