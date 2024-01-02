@@ -180,5 +180,11 @@ def reset_password():
     if current_user.is_authenticated:
         return redirect('home')
     form = RequestResetForm()
-    return render_template('reset_form.html',title ='Reset Password' form=form)
+    if form.validate_on_submit():
+        hashed = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        User.password = hashed
+        db.session.commit()
+        flash('Your password has been updated', 'info')
+        
+    return render_template('reset_form.html', title ='Reset Password' ,form=form)
 

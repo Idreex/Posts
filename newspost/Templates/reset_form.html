@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+    {{title}}
+
+    {% block content %}
+
+    <div class="form-control">
+        <form method='POST'>
+            {{form.hidden_tag()}}
+            <legend form-froup>Login</legend><hr>
+                <div class="form-group">
+                    <div class="form-group">
+                        {{form.email.label(class='form-control-label')}}
+                            {% if form.email.error %}
+                                {{form.email(class='form-control form-control-lg is-invalid')}}
+                                <div class="invalid-feedback">
+                                    {% for error in form.email.errors %}
+                                        <span>{{error}}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{form.email(class='form-control form-control-lg')}}
+                            {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        {{form.submit(class='btn btn-outline-info')}}
+                    </div>
+                    <div class="border-top pt-3">
+                        <small class="text-muted">
+                            Need An Account? <a class="ml-2" href="{{ url_for('register') }}">Sign Up Now</a>
+                        </small>
+                </div>
+        </form>
+    </div>
+    </div>
+
+
+
+    {% endblock content %}
