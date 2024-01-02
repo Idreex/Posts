@@ -176,21 +176,6 @@ def user_post(username):
     return render_template('user_post.html', title='Home', posts=posts, user=user)
 
 
-<<<<<<< HEAD
-@app.route('/reset_password', methods=['GET', 'POST'])
-def reset_password():
-    if current_user.is_authenticated:
-        return redirect('home')
-    form = RequestResetForm()
-    if form.validate_on_submit():
-        hashed = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        User.password = hashed
-        db.session.commit()
-        flash('Your password has been updated', 'info')
-        
-    return render_template('reset_form.html', title ='Reset Password' ,form=form)
-=======
-
 def send_reset_email(user):
     token = user.get_reset_token()
     msg = Message('Password Reset Request', sender='noreply@demo.com', recipients=[user.email]) 
@@ -230,5 +215,4 @@ def reset_token(token):
         return redirect(url_for('home'))
     return render_template('reset_token.html',title = 'Reset Password',form=form)
 
->>>>>>> eb3229f47f13e848ac1cd28ca921ca4b1ec19caa
 
