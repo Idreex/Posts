@@ -2,7 +2,7 @@ from datetime import datetime
 from newspost import db, app
 from flask_login import UserMixin
 from newspost import login_manager
-from itsdangerous import TimedSerializer as Serializer
+from itsdangerous import URLSafeTimedSerializer as Serializer
 
 
 @login_manager.user_loader
@@ -20,18 +20,33 @@ class User(db.Model, UserMixin):
     date_updated = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     post = db.relationship('Post', backref='author', lazy=True)
 
-    def get_reset_token(self, expires_sec=1800):
-        s = Serializer(app.config['SECRET_KEY'], expires_sec)
-        result = s.dumps({'user_id' : self.id})
-        return result.decode("utf-8")
+
+
+   
+    def generate_reset_password_code(self):
+        s = Serializer(app.config['SECRET_KEY'], salt='reset_password')
+        return s.dumps(self.username)
+
+
+    @staticmethod
+    def check_reset_password_code(token):
+        s = Serializer(app.config['SECRET_KEY'], salt='reset_password')
+        return s.loads(token, max_age=7200)
+
+
+
+    # def get_reset_token(self, expires_sec=1800):
+    #     s = Serializer(app.config['SECRET_KEY'], expires_sec)
+    #     return s.dumps({'user_id' : self.id})
+         
     
-    def verify_reset_token(token):
-        s = Serializer(app.config['SECRET_KEY'])
-        try:
-            user_id = s.loads(token)['user_id']
-        except:
-            return None
-        return User.query.get(user_id)
+    # def verify_reset_token(token):
+    #     s = Serializer(app.config['SECRET_KEY'])
+    #     try:
+    #         user_id = s.loads(token)['user_id']
+    #     except:
+    #         return None
+    #     return User.query.get(user_id)
 
 
     def __repr__(self):

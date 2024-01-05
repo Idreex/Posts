@@ -177,7 +177,7 @@ def user_post(username):
 
 
 def send_reset_email(user):
-    token = user.get_reset_token()
+    token = user.generate_reset_password_code()
     msg = Message('Password Reset Request', sender='noreply@demo.com', recipients=[user.email]) 
     msg.body = f'''To reset your password, visit the following link: 
 {url_for('reset_token',token=token, _external=True)}
@@ -202,7 +202,7 @@ def reset_request():
     
 @app.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_token(token):
-    user = User.verify_reset_token(token)
+    user = User.check_reset_password_code(token)
     if user is None:
         flash('That is an invalid or expired token', category='warning')
         return redirect(url_for('reset_request'))
