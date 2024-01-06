@@ -1,5 +1,8 @@
 import os
 import secrets
+import smtplib
+import imghdr
+from email.message import EmailMessage
 from datetime import datetime
 from newspost import app, db, bcrypt, mail
 from flask import render_template, redirect, flash, url_for, request, abort
@@ -177,13 +180,29 @@ def user_post(username):
 
 
 def send_reset_email(user):
+    EMAIL_ADDRESS = os.getenv('EMAIL_USER')
+    EMAIL_PASSWORD = os.getenv('EMAIL_PASS')
+
+    contacts = ['oladimejiidrees3@gmail.com', 'idreesademola07@gmail.com']
+
+    msg = EmailMessage()
+    msg['Subject'] = 'Check out Bronx as a puppy!'
+    msg['From'] = EMAIL_ADDRESS
+    msg['To'] = 'oladimejiidrees3@gmail.com'
+
     token = user.generate_reset_password_code()
-    msg = Message('Password Reset Request', sender='noreply@demo.com', recipients=[user.email]) 
-    msg.body = f'''To reset your password, visit the following link: 
-{url_for('reset_token',token=token, _external=True)}
-If you did not make request for this, then kindly ignore this mail and no changes will be made
-'''
-    mail.send(msg)
+    msg.set_content(f'''To reset your password, visit the following link:{url_for('reset_token',token=token, _external=True)}, please ignore if you did not make request''')
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+        smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+        smtp.send_message(msg)
+
+# token = user.generate_reset_password_code()
+#     msg = Message('Password Reset Request', sender='noreply@demo.com', recipients=[user.email]) 
+#     msg.body = f'''To reset your password, visit the following link: 
+# {url_for('reset_token',token=token, _external=True)}
+# If you did not make request for this, then kindly ignore this mail and no changes will be made
+# '''
+#     mail.send(msg)
 
 
 
